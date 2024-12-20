@@ -1,7 +1,5 @@
 # Messaging Event Servers
 
-
-
 ## Quick start
 
 ### Prereqs
@@ -23,7 +21,7 @@ a. Go to https://api.slack.com/apps/.
 
 b. Navigate to "OAuth & Permissions". 
 
-c. Add these essential scopes under "Bot Token Scopes":
+c. Add these `essential scopes` under "Bot Token Scopes":
 
 ```
    app_mentions:read      # To receive mention events
@@ -34,23 +32,9 @@ c. Add these essential scopes under "Bot Token Scopes":
    im:write             # To send direct messages
 ```
 
-d. Go to "Event Subscriptions", and toggle "Enable Events" to "On".
+d. Under OAuth Tokens, install the app with `Install to Slack Workspace` and then get `SLACK_BOT_TOKEN`.
 
-e. TODO: Add your Request URL (should be https://your-domain/events/slack)?
-
-f. TODO: Under "Subscribe to bot events", add these events. 
-
-```
-     message.channels    # Messages in public channels
-     message.groups     # Messages in private channels
-     message.im        # Direct messages
-     app_mention      # When your app is mentioned
-```
-
-g. Under OAuth Tokens, install the app with `Install to Slack Workspace` and then get `SLACK_BOT_TOKEN`.
-```
-
-h. Under "Basic Information", get `SLACK_SIGNING_SECRET`.
+e. Under "Basic Information", get `SLACK_SIGNING_SECRET`.
 
 **3. Copy the SLACK_SIGNING_SECRET and SLACK_BOT_TOKEN to your .env file.** 
 
@@ -60,7 +44,9 @@ SLACK_SIGNING_SECRET=
 SLACK_BOT_TOKEN=xoxb-...
 ```
 
-**4. Copy your LangGraph deployment's URL and assistant ID (or graph name) to the `.env` file, along with a LangGraph/LangSmith API key (they're the same).**
+**4. Copy your LangGraph deployment's URL and assistant ID (or graph name) to the `.env` file.**
+
+Also add your LangGraph/LangSmith API key (they're the same).
 
 ```shell
 # .dotenv
@@ -74,7 +60,7 @@ LANGGRAPH_API_KEY=
 uv pip install -e .
 ```
 
-**6. Deploy.**
+**6. Deploy with Modal**
 
 a. If using Modal, run `modal token new`. 
 
@@ -102,16 +88,38 @@ View Deployment: https://modal.com/apps/youraccount/main/deployed/yourdeployment
 DEPLOYMENT_URL=
 ``` 
 
-**8. In `Event Subscriptions`, update the Request URL with the updated deployment URL.**
+**8. Go to "Event Subscriptions", and toggle "Enable Events" to "On".**
 
-TODO: Appear to need Modal URL with `/events/slack`.
+**9. Then, in `Event Subscriptions`, update the Request URL with the Modal deployment URL.**
 
-**9. Install your app to your Slack workspace.**
+Be sure to add `/events/slack` to the end of the URL.
 
-TODO: Seemed to already be installed from above?
+```
+https://<app-name>-fastapi-app.modal.run/events/slack
+```
 
-Allow users to send Slash commands and messages from the messages tab in `App Home`.
+**10. In `Event Subscriptions`, "Subscribe to bot events"** 
+
+```
+     message.channels    # Messages in public channels
+     message.groups     # Messages in private channels
+     message.im        # Direct messages
+     app_mention      # When your app is mentioned
+```
+
+**11. Install your app to your Slack workspace.**
 
 Chat with the bot. The bot responds if you `@mention` it within a channel of which it is a member. You can also DM the bot. You needn't use `@mention`'s in the bot's DMs. It's clear who you are speaking to.
 
+### Debugging 
+
+To test the app, run the `test.py` script:
+
+```shell
+python test.py 
+```
+
+Check your Modal deployment logs to see the response.
+
+Also check your LangGraph deployment logs to see the response.
 
