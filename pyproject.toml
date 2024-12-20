@@ -1,0 +1,23 @@
+[project]
+name = "langgraph-slack-server"
+version = "0.0.1"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.6",
+    "langgraph-sdk>=0.1.48",
+    "modal>=0.68.42",
+    "python-dotenv>=1.0.1",
+    "slack-bolt>=1.22.0",
+    "uvicorn>=0.34.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8.4",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["langgraph_slack*"]
