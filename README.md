@@ -11,6 +11,8 @@
 
 The overall concept is simple: we will deploy a server (with Modal, by default) that acts as a proxy between Slack and LangGraph. It has two main functions: first, it receives Slack events, packages them into a format that our LangGraph app can understand (chat `messages`), and passes them to our LangGraph app. Second, it receives the LangGraph app's responses, extracts the most recent `message` from the `messages` list, and sends it back to Slack. 
 
+![slack_integration](https://github.com/user-attachments/assets/e73f5121-fed1-4cde-9297-3250ea273e1e)
+
 ### Setup
 
 1. Install `uv` (optional) and dependencies.
@@ -162,5 +164,4 @@ And replace `<Your-Modal-deployment-url>` with your Modal deployment URL.
         "socket_mode_enabled": false,
         "token_rotation_enabled": false
     }
-}
 ```
