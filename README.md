@@ -25,16 +25,27 @@ uv sync --dev
 
 3. When creating an app `From Scratch`, go to `OAuth & Permissions` and add the following under `"Bot Token Scopes"`.
 * This gives the app the necessary permissions to read and write messages.
+* Add scopes for the app's functionality, as an example: 
 
 ```
-"app_mentions:read",
-"assistant:write",
-"channels:history",
-"chat:write",
-"groups:history",
-"im:write",
-"im:history",
-"mpim:history"
+# Reading Messages
+"app_mentions:read",     # View when the bot is @mentioned
+"channels:read",         # View basic channel info and membership
+"channels:history",      # View messages in public channels
+"groups:read",          # View private channel info and membership
+"groups:history",       # View messages in private channels
+"im:read",             # View direct message info
+"im:history",          # View messages in direct messages
+"mpim:history",        # View messages in group direct messages
+
+# Writing Messages
+"chat:write",          # Send messages in channels the bot is in
+"chat:write.public",   # Send messages in any public channel
+"im:write",           # Send direct messages to users
+
+# Special Permissions
+"assistant:write",     # Use Slack's built-in AI features
+"channels:join",       # Join public channels automatically
 ```
 
 4. Then, go to `OAuth & Permissions` and `Install App to Workspace`. This will expose the app's `SLACK_BOT_TOKEN`. 
@@ -85,7 +96,7 @@ DEPLOYMENT_URL=https://youraccount--yourdeploymentname-fastapi-app.modal.run
 10. Finally, go to `Event Subscriptions` in Slack and add: `https://youraccount--yourdeploymentname-fastapi-app.modal.run/events/slack` as the request URL. 
 * This is the URL that Slack will send events to.
 * Make sure to add the `/events/slack` path to the end of the Modal deployment URL.
-* Add events that you want to receive.
+* Add events that you want to receive, as an example: 
 
 ```
 "app_mention",        # Notify when bot is @mentioned
@@ -110,11 +121,11 @@ And replace `<Your-Modal-deployment-url>` with your Modal deployment URL.
 ```JSON
 {
     "display_information": {
-        "name": "<Your-App-Name>"
+        "name": "Reply-gAI"
     },
     "features": {
         "bot_user": {
-            "display_name": "<Your-App-Name>",
+            "display_name": "Reply-gAI",
             "always_online": false
         }
     },
@@ -124,19 +135,25 @@ And replace `<Your-Modal-deployment-url>` with your Modal deployment URL.
                 "app_mentions:read",
                 "assistant:write",
                 "channels:history",
+                "channels:join",
+                "channels:read",
                 "chat:write",
                 "groups:history",
-                "im:write",
+                "groups:read",
                 "im:history",
-                "mpim:history"
+                "im:write",
+                "mpim:history",
+                "im:read",
+                "chat:write.public"
             ]
         }
     },
     "settings": {
         "event_subscriptions": {
-            "request_url": "https://<your Modal deployment url>-fastapi-app.modal.run/events/slack",
+            "request_url": "https://lance--reply-gai-fastapi-app.modal.run/events/slack",
             "bot_events": [
                 "app_mention",
+                "message.channels",
                 "message.im",
                 "message.mpim"
             ]
@@ -145,4 +162,5 @@ And replace `<Your-Modal-deployment-url>` with your Modal deployment URL.
         "socket_mode_enabled": false,
         "token_rotation_enabled": false
     }
+}
 ```
