@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import re
+import json
 import uuid
 from typing import Awaitable, Callable, TypedDict
 from contextlib import asynccontextmanager
@@ -14,7 +15,7 @@ from langgraph_slack import config
 
 LOGGER = logging.getLogger(__name__)
 LANGGRAPH_CLIENT = get_client(url=config.LANGGRAPH_URL)
-
+GRAPH_CONFIG = json.loads(config.CONFIG) if isinstance(config.CONFIG, str) else config.CONFIG
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -99,6 +100,7 @@ async def _process_task(task: dict):
                     }
                 ]
             },
+            config=GRAPH_CONFIG,
             metadata={
                 "event": "slack",
                 "slack_event_type": "message",

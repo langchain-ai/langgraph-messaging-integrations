@@ -18,6 +18,7 @@ else:
 
 LANGGRAPH_URL = environ["LANGGRAPH_URL"]
 ASSISTANT_ID = environ["LANGGRAPH_ASSISTANT_ID"]
+CONFIG = environ["CONFIG"]
 DEPLOYMENT_URL = environ.get("DEPLOYMENT_URL")
 if not DEPLOYMENT_URL:
     LOGGER.warning("DEPLOYMENT_URL not set")

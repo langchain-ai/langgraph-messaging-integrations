@@ -116,19 +116,22 @@ DEPLOYMENT_URL=https://youraccount--yourdeploymentname-fastapi-app.modal.run
 
 Here is an example Slack app manifest, which you can use for quickstart.
 
-Simply replace `<Your-App-Name>` with your app's name.
+Simply replace `your-app-name` with your app's name.
 
-And replace `<Your-Modal-deployment-url>` with your Modal deployment URL.
+And replace `your-app-name` in the Modal deployment URL.
 
 ```JSON
 {
     "display_information": {
-        "name": "Reply-gAI"
+        "name": "your-app-name"
     },
     "features": {
         "bot_user": {
-            "display_name": "Reply-gAI",
+            "display_name": "your-app-name",
             "always_online": false
+        },
+        "assistant_view": {
+            "assistant_description": "your-app-description"
         }
     },
     "oauth_config": {
@@ -152,16 +155,18 @@ And replace `<Your-Modal-deployment-url>` with your Modal deployment URL.
     },
     "settings": {
         "event_subscriptions": {
-            "request_url": "https://lance--reply-gai-fastapi-app.modal.run/events/slack",
+            "request_url": "https://your-app-name-fastapi-app.modal.run/events/slack",
             "bot_events": [
                 "app_mention",
                 "message.channels",
                 "message.im",
-                "message.mpim"
+                "message.mpim",
+                "assistant_thread_started"
             ]
         },
         "org_deploy_enabled": false,
         "socket_mode_enabled": false,
         "token_rotation_enabled": false
     }
+}
 ```
