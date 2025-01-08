@@ -90,7 +90,8 @@ uv sync --dev
 * `SLACK_SIGNING_SECRET` is used to verify that incoming requests TO your server are actually FROM Slack.
 
 6. Copy your LangGraph deployment's URL and assistant ID (or graph name) to the `.env` file.
-* For example, to test with ChatLangChai you can use the following public deployment URL with your LangSmith/LangGraph API key.
+* For example, for a ChatLangChain blog post you can use the following public deployment URL.
+* Simply provide your LangSmith/LangGraph API key.
 ```shell
 LANGGRAPH_URL="https://langr.ph/marketplace/6d5d0ba3-f1a3-4769-97d8-dc2a4f6dba16"
 LANGGRAPH_ASSISTANT_ID="chat"
