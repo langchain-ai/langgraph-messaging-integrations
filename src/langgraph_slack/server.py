@@ -14,7 +14,7 @@ from langgraph_slack import config
 
 LOGGER = logging.getLogger(__name__)
 LANGGRAPH_CLIENT = get_client(url=config.LANGGRAPH_URL)
-
+CONFIG = config.CONFIG
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -99,6 +99,7 @@ async def _process_task(task: dict):
                     }
                 ]
             },
+            config=CONFIG,
             metadata={
                 "event": "slack",
                 "slack_event_type": "message",
