@@ -1,4 +1,8 @@
-# Messaging Event Servers
+# LangGraph Application Integration with Slack
+
+Modern AI applications like chatbots and agents communicate through natural language, making messaging platforms like Slack an ideal interface for interacting with them. As these AI assistants take on more complex tasks, users need to engage with them in their native work environments rather than separate web interfaces.
+
+This repository demonstrates how to connect any LangGraph-powered application (chatbot, agent, or other AI system) to Slack, allowing teams to interact with their AI assistants directly in their everyday communication channels. Currently focused on Slack integration, with a straightforward approach that can be adapted for other messaging platforms.
 
 ## Quickstart
 
