@@ -22,3 +22,4 @@ CONFIG = environ["CONFIG"]
 DEPLOYMENT_URL = environ.get("DEPLOYMENT_URL")
 if not DEPLOYMENT_URL:
     LOGGER.warning("DEPLOYMENT_URL not set")
+SLACK_CHANNEL_ID = environ.get("SLACK_CHANNEL_ID")
