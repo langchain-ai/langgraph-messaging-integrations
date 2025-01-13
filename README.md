@@ -13,7 +13,7 @@ This repository demonstrates how to connect any LangGraph-powered application (c
 
 ### Flow
 
-The overall concept is simple: we will deploy a server (with Modal, by default) that acts as a proxy between Slack and LangGraph. It has two main functions: first, it receives Slack events, packages them into a format that our LangGraph app can understand (chat `messages`), and passes them to our LangGraph app. Second, it receives the LangGraph app's responses, extracts the most recent `message` from the `messages` list, and sends it back to Slack. 
+The overall concept is simple: we will deploy a server (with Modal, by default) that acts as a proxy between Slack and LangGraph. It has two main functions: first, it receives Slack events, packages them into a format that our LangGraph app can understsand (chat `messages`), and passes them to our LangGraph app. Second, it receives the LangGraph app's responses, extracts the most recent `message` from the `messages` list, and sends it back to Slack. 
 
 ![slack_integration](https://github.com/user-attachments/assets/e73f5121-fed1-4cde-9297-3250ea273e1e)
 
@@ -129,6 +129,9 @@ View Deployment: https://modal.com/apps/lance/main/deployed/chat-langchain-bot
 ```
 
 8. Add the Modal deployment URL to your `.env` file.
+* Modal doesn't inject the public URL in your deployment by default. 
+* We add it as an environment variable so the server can fully specify the callback URL for LangGraph to respond to.
+
 ```
 # Get the following when you run modal deploy
 DEPLOYMENT_URL=https://youraccount--yourdeploymentname-fastapi-app.modal.run
