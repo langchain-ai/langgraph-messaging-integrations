@@ -128,20 +128,9 @@ For example, you should see the following for `--name chat-langchain-bot`:
 View Deployment: https://modal.com/apps/lance/main/deployed/chat-langchain-bot
 ```
 
-8. Add the Modal deployment URL to your `.env` file.
-* Modal doesn't inject the public URL in your deployment by default. 
-* We add it as an environment variable so the server can fully specify the callback URL for LangGraph to respond to.
-
-```
-# Get the following when you run modal deploy
-DEPLOYMENT_URL=https://youraccount--yourdeploymentname-fastapi-app.modal.run
-``` 
-
-9. Also add the Modal deployment URL to `Event Subscriptions` in Slack with `/events/slack` appended.
+8. Add the Modal deployment URL to `Event Subscriptions` in Slack with `/events/slack` appended.
 * E.g., `https://youraccount--yourdeploymentname-fastapi-app.modal.run/events/slack` as the request URL. 
 * This is the URL that Slack will send events to.
-
-10. Finally, re-deploy your Modal app with the URL set.
 
 ## `From Scratch` Slack App Setup
 

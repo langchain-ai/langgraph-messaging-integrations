@@ -247,6 +247,8 @@ if config.DEPLOY_MODAL:
     )
     @modal.asgi_app()
     def fastapi_app():
+        if not config.DEPLOYMENT_URL:
+            config.DEPLOYMENT_URL = fastapi_app.web_url
         return APP
 
 
