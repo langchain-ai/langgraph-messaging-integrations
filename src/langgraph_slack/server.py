@@ -15,7 +15,10 @@ from langgraph_slack import config
 
 LOGGER = logging.getLogger(__name__)
 LANGGRAPH_CLIENT = get_client(url=config.LANGGRAPH_URL)
-GRAPH_CONFIG = json.loads(config.CONFIG) if isinstance(config.CONFIG, str) else config.CONFIG
+GRAPH_CONFIG = (
+    json.loads(config.CONFIG) if isinstance(config.CONFIG, str) else config.CONFIG
+)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -119,8 +122,14 @@ async def _process_task(task: dict):
         LOGGER.info(f"Processing LangGraph callback: {event['thread_id']}")
         state_values = event["values"]
         response_message = state_values["messages"][-1]
-        thread_ts = event["metadata"]["thread_ts"] or event["metadata"]["event_ts"]
-        channel_id = event["metadata"]["channel"]
+        thread_ts = event["metadata"].get("thread_ts") or event["metadata"].get(
+            "event_ts"
+        )
+        channel_id = event["metadata"].get("channel") or config.SLACK_CHANNEL_ID
+        if not channel_id:
+            raise ValueError(
+                "Channel ID not found in event metadata and not set in environment"
+            )
         await APP_HANDLER.app.client.chat_postMessage(
             channel=channel_id,
             thread_ts=thread_ts,
