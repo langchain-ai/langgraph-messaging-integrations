@@ -64,9 +64,10 @@ async def _process_task(task: dict):
             event.get("thread_ts") or event["ts"], event["channel"]
         )
         channel_id = event["channel"]
+        # This will connect to the loopback endpoint if not provided.
         webhook = f"{config.DEPLOYMENT_URL}/callbacks/{thread_id}"
 
-        if _is_mention(event) or _is_dm(event):
+        if (await _is_mention(event)) or _is_dm(event):
             text_with_names = await _build_contextual_message(event)
         else:
             LOGGER.info("Skipping non-mention message")
@@ -138,8 +139,8 @@ async def _process_task(task: dict):
 async def handle_message(event: SlackMessageData, say: Callable, ack: Callable):
     LOGGER.info("Enqueuing handle_message task...")
     nouser = not event.get("user")
+    ismention = await _is_mention(event)
     userisbot = event.get("bot_id") == config.BOT_USER_ID
-    ismention = _is_mention(event)
     isdm = _is_dm(event)
     if nouser or userisbot or not (ismention or isdm):
         LOGGER.info(f"Ignoring message not directed at the bot: {event}")
@@ -155,8 +156,6 @@ async def just_ack(ack: Callable[..., Awaitable], event):
 
 
 APP_HANDLER = AsyncSlackRequestHandler(AsyncApp(logger=LOGGER))
-if not config.BOT_USER_ID or config.BOT_USER_ID == "fake-user-id":
-    config.BOT_USER_ID = asyncio.run(APP_HANDLER.app.client.auth_test())["user_id"]
 MENTION_REGEX = re.compile(r"<@([A-Z0-9]+)>")
 USER_ID_PATTERN = re.compile(rf"<@{config.BOT_USER_ID}>")
 APP_HANDLER.app.event("message")(ack=just_ack, lazy=[handle_message])
@@ -211,7 +210,11 @@ async def webhook_callback(req: Request):
     return {"status": "success"}
 
 
-def _is_mention(event: SlackMessageData):
+async def _is_mention(event: SlackMessageData):
+    global USER_ID_PATTERN
+    if not config.BOT_USER_ID or config.BOT_USER_ID == "fake-user-id":
+        config.BOT_USER_ID = (await APP_HANDLER.app.client.auth_test())["user_id"]
+        USER_ID_PATTERN = re.compile(rf"<@{config.BOT_USER_ID}>")
     matches = re.search(USER_ID_PATTERN, event["text"])
     return bool(matches)
 
@@ -332,31 +335,6 @@ async def _build_contextual_message(event: SlackMessageData) -> str:
         + new_message
     )
     return contextual_message
-
-
-if config.DEPLOY_MODAL:
-    import modal
-
-    modal_app = modal.App()
-
-    image = modal.Image.debian_slim().pip_install_from_pyproject(
-        pyproject_toml="pyproject.toml"
-    )
-
-    @modal_app.function(
-        image=image,
-        keep_warm=1,
-        allow_concurrent_inputs=30,
-        secrets=[
-            modal.Secret.from_dotenv(),
-            modal.Secret.from_local_environ(["DEPLOY_MODAL"]),
-        ],
-    )
-    @modal.asgi_app()
-    def fastapi_app():
-        if not config.DEPLOYMENT_URL:
-            config.DEPLOYMENT_URL = fastapi_app.web_url
-        return APP
 
 
 if __name__ == "__main__":

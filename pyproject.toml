@@ -1,23 +1,32 @@
 [project]
-name = "langgraph-slack-server"
+name = "langgraph-slack"
 version = "0.0.1"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.6",
+    "langchain>=0.3.20",
+    "langchain-openai>=0.3.7",
     "langgraph-sdk>=0.1.48",
-    "modal>=0.68.42",
+    "langmem>=0.0.15",
     "python-dotenv>=1.0.1",
     "slack-bolt>=1.22.0",
     "uvicorn>=0.34.0",
+    "langgraph-prebuilt>=0.1.2"
 ]
 
-[project.optional-dependencies]
+[project.packages]
+find = { where = ["src"] }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[dependency-groups]
 dev = [
     "ruff>=0.8.4",
+    "langgraph-api>=0.0.28",
+    "langgraph-cli>=0.1.75",
 ]
-
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["langgraph_slack*"]
