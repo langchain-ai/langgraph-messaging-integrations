@@ -16,7 +16,7 @@ else:
     # APP_TOKEN = environ["SLACK_APP_TOKEN"]
 
 
-LANGGRAPH_URL = environ["LANGGRAPH_URL"]
+LANGGRAPH_URL = environ.get("LANGGRAPH_URL")
 ASSISTANT_ID = environ["LANGGRAPH_ASSISTANT_ID"]
 CONFIG = environ.get("CONFIG") or "{}"
 DEPLOYMENT_URL = environ.get("DEPLOYMENT_URL")
