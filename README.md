@@ -9,11 +9,10 @@ This repository demonstrates how to connect any LangGraph-powered application (c
 ### Prerequisites
 
 - [LangGraph platform](https://langchain-ai.github.io/langgraph/concepts/langgraph_platform/) deployment with a `messages` state key (e.g., a chatbot).
-- [Modal account](https://modal.com/apps/) for creating a server that receives Slack events and passes them to your LangGraph app.
 
 ### Flow
 
-The overall concept is simple: we will deploy a server (with Modal, by default) that acts as a proxy between Slack and LangGraph. It has two main functions: first, it receives Slack events, packages them into a format that our LangGraph app can understsand (chat `messages`), and passes them to our LangGraph app. Second, it receives the LangGraph app's responses, extracts the most recent `message` from the `messages` list, and sends it back to Slack. 
+The overall concept is simple: Slack routes are added directly to the API server deployed on the LangGraph platform using the custom routes support. The server has two main functions: first, it receives Slack events, packages them into a format that our LangGraph app can understand (chat `messages`), and passes them to our LangGraph app. Second, it receives the LangGraph app's responses, extracts the most recent `message` from the `messages` list, and sends it back to Slack.
 
 ![slack_integration](https://github.com/user-attachments/assets/e73f5121-fed1-4cde-9297-3250ea273e1e)
 
@@ -30,7 +29,7 @@ uv sync --dev
 3. Copy the below manifest and paste it into the `Manifest` field.
 
 * Replace `your-app-name` with your app's name and `your-app-description` with your app's description.
-* You will update `your-app-name` in the Modal deployment URL later.
+* Replace `your-langgraph-platform-url` with your LangGraph platform URL (if you're testing locally, you can use something like ngrok for tunneling)
 * The scopes gives the app the necessary permissions to read and write messages.
 * The events are what we want to receive from Slack.
 
@@ -69,7 +68,7 @@ uv sync --dev
     },
     "settings": {
         "event_subscriptions": {
-            "request_url": "https://your-app-name-fastapi-app.modal.run/events/slack",
+            "request_url": "your-langgraph-platform-url/events/slack",
             "bot_events": [
                 "app_mention",
                 "message.channels",
@@ -94,49 +93,34 @@ uv sync --dev
 * `SLACK_SIGNING_SECRET` is used to verify that incoming requests TO your server are actually FROM Slack.
 
 6. Copy your LangGraph deployment's URL and assistant ID (or graph name) to the `.env` file.
-* For example, for a ChatLangChain blog post you can use the following public deployment URL.
-* Simply provide your LangSmith/LangGraph API key.
+* The `.env.example` file shows the required environment variables.
+* Example environment variables:
 ```shell
-LANGGRAPH_URL="https://langr.ph/marketplace/6d5d0ba3-f1a3-4769-97d8-dc2a4f6dba16"
-LANGGRAPH_ASSISTANT_ID="chat"
-LANGGRAPH_API_KEY="xxx"
-CONFIG={"configurable": {"response_model": "anthropic/claude-3-5-sonnet-latest"}}
+# Slack credentials
+SLACK_SIGNING_SECRET=
+SLACK_BOT_TOKEN=xoxb-...
+# SLACK_BOT_USER_ID= (optional)
+
+# LangGraph platform instance you're connecting to
+LANGGRAPH_ASSISTANT_ID=
+CONFIG= # Optional
 ```
 
-7. Install the package and deploy your Modal app.
+7. Deploy your application to the LangGraph platform with custom routes.
 
-If you are using Modal for the first time: 
-```
-modal token new
-```
+The Slack routes are added directly to the API server deployed on the LangGraph platform, using the custom routes support as documented at https://langchain-ai.github.io/langgraph/how-tos/http/custom_routes/.
 
-Install the package and deploy your Modal server to get your modal app URL.
-```shell
-uv pip install -e .
-DEPLOY_MODAL=true uv run modal deploy src/langgraph_slack/server.py::modal_app --name <Your modal app name>
-```
+The integration uses the langgraph_sdk and connects to the current platform routes by setting URL to None, which connects to the loopback server. The Slack Bolt SDK is used to register a slack webhook to handle slack events (new messages, @mentions, etc). When an event is received, it creates a run on the current server and passes in a webhook "/webhooks/<thread_id>" that is triggered when the chatbot completes. Since a relative path is provided, the LangGraph platform knows to call the route on this server itself.
 
-For example, you should see the following for `--name chat-langchain-bot`:
-```
-2025-01-08 13:54:08 WARNING DEPLOYMENT_URL not set
-✓ Created objects.
-├── 🔨 Created mount /Users/rlm/Desktop/Code/langgraph-messaging-integrations/src/langgraph_slack/server.py
-├── 🔨 Created mount PythonPackage:langgraph_slack
-└── 🔨 Created web function fastapi_app => https://lance--chat-langchain-bot-fastapi-app.modal.run
-✓ App deployed in 1.037s! 🎉
-
-View Deployment: https://modal.com/apps/lance/main/deployed/chat-langchain-bot
-```
-
-8. Add the Modal deployment URL to `Event Subscriptions` in Slack with `/events/slack` appended.
-* E.g., `https://youraccount--yourdeploymentname-fastapi-app.modal.run/events/slack` as the request URL. 
+8. Add your LangGraph platform URL to `Event Subscriptions` in Slack with `/events/slack` appended.
+* E.g., `https://your-langgraph-platform-url/events/slack` as the request URL. 
 * This is the URL that Slack will send events to.
 
 ## `From Scratch` Slack App Setup
 
 You can use this setup to customize your Slack app permissions and event subscriptions.
 
-1. Create a Slack app https://api.slack.com/apps/ amd select `From Scratch`.
+1. Create a Slack app https://api.slack.com/apps/ and select `From Scratch`.
 
 2. Go to `OAuth & Permissions` and add your desired `Bot Token Scopes`.
 * This gives the app the necessary permissions to read and write messages.
@@ -172,47 +156,26 @@ You can use this setup to customize your Slack app permissions and event subscri
 * `SLACK_SIGNING_SECRET` is used to verify that incoming requests TO your server are actually FROM Slack.
 
 ```shell
-# .dotenv
+# .env
 SLACK_SIGNING_SECRET=
 SLACK_BOT_TOKEN=xoxb-...
 ```
 
-6. Copy your LangGraph deployment's URL and assistant ID (or graph name) to the `.env` file, along with a LangGraph/LangSmith API key (they're the same).
+6. Set up your LangGraph deployment with custom routes support.
 
 ```shell
-# .dotenv
-LANGGRAPH_URL=
-LANGGRAPH_ASSISTANT_ID=
-LANGGRAPH_API_KEY=
+# .env
+LANGGRAPH_ASSISTANT_ID=your_assistant_id
+CONFIG={"your_config": "here"}
 ```
 
-7. Deploy your Modal server and replace "<Your modal app name>" with your desired app name. 
-```shell
-DEPLOY_MODAL=true uv run modal deploy src/langgraph_slack/server.py::modal_app --name <Your modal app name>
-```
-If successful, you should see something like this in your terminal:
+7. Deploy your application to the LangGraph platform with custom routes.
 
-```shell
-✓ Created objects.
-├── 🔨 Created mount /Users/foo/path/to/slack-server/src/langgraph_slack/server.py
-├── 🔨 Created mount PythonPackage:langgraph_slack
-└── 🔨 Created web function fastapi_app => https://youraccount--yourdeploymentname-fastapi-app.modal.run
-✓ App deployed in 1.101s! 🎉
+The application uses the LangGraph platform's custom routes feature to add Slack integration directly to your deployed application. When deployed, the Slack routes will be available at your LangGraph platform URL.
 
-View Deployment: https://modal.com/apps/youraccount/main/deployed/yourdeploymentname
-```
+After deployment, update your Slack app's Event Subscriptions URL to point to your LangGraph platform URL with `/events/slack` appended.
 
-8. Add the Modal deployment URL to your `.env` file.
-```
-# Get the following when you run modal deploy
-DEPLOYMENT_URL=https://youraccount--yourdeploymentname-fastapi-app.modal.run
-``` 
-
-9. Also add the Modal deployment URL to `Event Subscriptions` in Slack with `/events/slack` appended.
-* E.g., `https://youraccount--yourdeploymentname-fastapi-app.modal.run/events/slack` as the request URL. 
-* This is the URL that Slack will send events to.
-
-10. In `Event Subscriptions`, add events that you want to receive. As an example: 
+8. In `Event Subscriptions`, add events that you want to receive. As an example: 
 
 ```
 "app_mention",        # Notify when bot is @mentioned
@@ -221,9 +184,7 @@ DEPLOYMENT_URL=https://youraccount--yourdeploymentname-fastapi-app.modal.run
 "message.channels",   # Get notified of channel messages
 ```
 
-11. Re-deploy your modal app now that the DEPLOYMENT_URL has been added to the .env file.
-
-12. Chat with the bot in Slack. 
+9. Chat with the bot in Slack. 
 * The bot responds if you `@mention` it within a channel of which it is a member. 
 * You can also DM the bot. You needn't use `@mention`'s in the bot's DMs. It's clear who you are speaking to.
 

@@ -139,8 +139,8 @@ async def _process_task(task: dict):
 async def handle_message(event: SlackMessageData, say: Callable, ack: Callable):
     LOGGER.info("Enqueuing handle_message task...")
     nouser = not event.get("user")
-    userisbot = event.get("bot_id") == config.BOT_USER_ID
     ismention = await _is_mention(event)
+    userisbot = event.get("bot_id") == config.BOT_USER_ID
     isdm = _is_dm(event)
     if nouser or userisbot or not (ismention or isdm):
         LOGGER.info(f"Ignoring message not directed at the bot: {event}")
@@ -335,31 +335,6 @@ async def _build_contextual_message(event: SlackMessageData) -> str:
         + new_message
     )
     return contextual_message
-
-
-if config.DEPLOY_MODAL:
-    import modal
-
-    modal_app = modal.App()
-
-    image = modal.Image.debian_slim().pip_install_from_pyproject(
-        pyproject_toml="pyproject.toml"
-    )
-
-    @modal_app.function(
-        image=image,
-        keep_warm=1,
-        allow_concurrent_inputs=30,
-        secrets=[
-            modal.Secret.from_dotenv(),
-            modal.Secret.from_local_environ(["DEPLOY_MODAL"]),
-        ],
-    )
-    @modal.asgi_app()
-    def fastapi_app():
-        if not config.DEPLOYMENT_URL:
-            config.DEPLOYMENT_URL = fastapi_app.web_url
-        return APP
 
 
 if __name__ == "__main__":

@@ -691,7 +691,7 @@ wheels = [
 
 [[package]]
 name = "langgraph-api"
-version = "0.0.27"
+version = "0.0.28rc1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
@@ -711,9 +711,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "watchfiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/78/62/8a76aa025e0fcf6e0119698ec41447a2669737367085a6342bf6574023a9/langgraph_api-0.0.27.tar.gz", hash = "sha256:c21eb2b7fe3b93998379f7b13ad7d23b3ef06ab821b008c6b12b954acfb587ec", size = 191961 }
+sdist = { url = "https://files.pythonhosted.org/packages/42/dd/fa67f14ad0e82f7c7273f66e86d0e53ca13dd459d329696a3e0344515b6a/langgraph_api-0.0.28rc1.tar.gz", hash = "sha256:d36e2853b042a194a5a6cb32b7acad110144ff2b015b6b4a95e1d80b72a1ed40", size = 183982 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/54/6995f671d4cd28d51b215f3cfec92cdc45c9216c395791c7dfe947b025e3/langgraph_api-0.0.27-py3-none-any.whl", hash = "sha256:9b21742238b15b8db9c2d3fd760a670332c8897d0bcbbd9d82e43b6ac15a7937", size = 227754 },
+    { url = "https://files.pythonhosted.org/packages/1d/45/eb345a3f2655f93c5e35721c265f1ff4bbcd3ae3fe80b797401cd1d406f6/langgraph_api-0.0.28rc1-py3-none-any.whl", hash = "sha256:07d5125d76f7ee88b3540008f68b437cabed9fd41556c2c1c060f4ab07a2ebe9", size = 212039 },
 ]
 
 [[package]]
@@ -739,12 +739,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e1/a6/6d42c432de17a6d7df2851b9e7d43eeeabc4d4e169c5d478f621276d3984/langgraph_cli-0.1.75.tar.gz", hash = "sha256:4b490a9a3f8b8b910422e0d84d054066902de45d5df0f23b18d4130aaac9ac06", size = 29241 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ab/3b/b120926bd4ba153a2626b1986bb3ac7c1439cf201e91786e8d8931295320/langgraph_cli-0.1.75-py3-none-any.whl", hash = "sha256:edf381264982aef8d9279706c813535c3becf4233620501a7240025b790e55c5", size = 31710 },
-]
-
-[package.optional-dependencies]
-inmem = [
-    { name = "langgraph-api", marker = "python_full_version < '4.0'" },
-    { name = "python-dotenv" },
 ]
 
 [[package]]
@@ -781,6 +775,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "langchain" },
     { name = "langchain-openai" },
+    { name = "langgraph-api" },
     { name = "langgraph-prebuilt" },
     { name = "langgraph-sdk" },
     { name = "langmem" },
@@ -792,7 +787,8 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "langgraph-cli", extra = ["inmem"] },
+    { name = "langgraph-api" },
+    { name = "langgraph-cli" },
     { name = "ruff" },
 ]
 
@@ -801,6 +797,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.115.6" },
     { name = "langchain", specifier = ">=0.3.20" },
     { name = "langchain-openai", specifier = ">=0.3.7" },
+    { name = "langgraph-api", specifier = "==0.0.28rc1" },
     { name = "langgraph-prebuilt", specifier = ">=0.1.2" },
     { name = "langgraph-sdk", specifier = ">=0.1.48" },
     { name = "langmem", specifier = ">=0.0.15" },
@@ -812,7 +809,8 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "langgraph-cli", extras = ["inmem"], specifier = ">=0.1.75" },
+    { name = "langgraph-api" },
+    { name = "langgraph-cli", specifier = ">=0.1.75" },
     { name = "ruff", specifier = ">=0.8.4" },
 ]
 
@@ -1506,11 +1504,11 @@ wheels = [
 
 [[package]]
 name = "structlog"
-version = "23.3.0"
+version = "25.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/44/30/1f73c8813fa47208cf17dc1239c148298ffafb11301b18071b8c6ba19f37/structlog-23.3.0.tar.gz", hash = "sha256:24b42b914ac6bc4a4e6f716e82ac70d7fb1e8c3b1035a765591953bfc37101a5", size = 1340937 }
+sdist = { url = "https://files.pythonhosted.org/packages/25/fe/578db23e17392a8693b45a7b7dc6985370f51dd937157def8ecc7b20930d/structlog-25.1.0.tar.gz", hash = "sha256:2ef2a572e0e27f09664965d31a576afe64e46ac6084ef5cec3c2b8cd6e4e3ad3", size = 1364973 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/5d/8afc87f72e8ba11001c0122e62fc1e19f580f8607f9d1078012cf1492325/structlog-23.3.0-py3-none-any.whl", hash = "sha256:d6922a88ceabef5b13b9eda9c4043624924f60edbb00397f4d193bd754cde60a", size = 66004 },
+    { url = "https://files.pythonhosted.org/packages/c1/14/e9aed6c820fa166e8a19a19e663e98bd5538004d68a70c5752458ca3656e/structlog-25.1.0-py3-none-any.whl", hash = "sha256:843fe4f254540329f380812cbe612e1af5ec5b8172205ae634679cd35a6d6321", size = 68921 },
 ]
 
 [[package]]
