@@ -3,7 +3,7 @@ from langmem import create_manage_memory_tool, create_search_memory_tool
 
 
 my_agent = create_react_agent(
-    "openai:o3-mini",
+    "anthropic:claude-3-7-sonnet-latest",
     tools=[
         create_manage_memory_tool("memories"),
         create_search_memory_tool("memories"),

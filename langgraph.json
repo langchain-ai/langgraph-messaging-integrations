@@ -6,5 +6,8 @@
   },
   "http": {
     "app": "./src/langgraph_slack/server.py:APP"
+  },
+  "auth": {
+    "path": "./src/langgraph_slack/auth.py:auth"
   }
 }
