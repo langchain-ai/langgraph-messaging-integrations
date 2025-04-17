@@ -14,6 +14,7 @@ from slack_bolt.async_app import AsyncApp
 from langgraph_slack import config
 
 LOGGER = logging.getLogger(__name__)
+# Defaults to "None", meaning the loopback endpoint.
 LANGGRAPH_CLIENT = get_client(url=config.LANGGRAPH_URL)
 GRAPH_CONFIG = (
     json.loads(config.CONFIG) if isinstance(config.CONFIG, str) else config.CONFIG
