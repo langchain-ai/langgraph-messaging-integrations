@@ -191,7 +191,7 @@ After deployment, update your Slack app's Event Subscriptions URL to point to yo
 
 ## Customizing the input and output
 
-By default, the bot assums that the LangGraph deployment uses the `messages` state key.
+By default, the bot assumes that the LangGraph deployment uses the `messages` state key.
 
 The request to the LangGraph deployment using the LangGraph SDK is made here in `src/langgraph_slack/server.py`:
 
