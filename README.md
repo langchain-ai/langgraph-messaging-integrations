@@ -19,6 +19,8 @@ The overall concept is simple: Slack routes are added directly to the API server
 
 ### Quickstart setup
 
+**Note:** This messaging integration should be added to your existing LangGraph application directory. Copy or move these files into your LangGraph app's root directory alongside your existing `langgraph.json` file.
+
 1. Install `uv` (optional) and dependencies.
 ```shell
 curl -LsSf https://astral.sh/uv/install.sh | sh
